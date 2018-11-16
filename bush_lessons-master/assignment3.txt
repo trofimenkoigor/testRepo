@@ -1,0 +1,48 @@
+Задание 1. С помощью циклов for, while, until написать скрипт, кот. по очереди выводит на экран все позиционные параметры.
+
+Задание 2. Написать скрипт, кот. находит файл /etc/resolv.conf и выдает количество DNS-серверов.
+
+====================================================================================================
+
+Написать скрипт который 
+1) совершает обход всего дерева каталогов, начиная с каталога, указанного в позиционном параметре;
+2) выводит на stdout все дерево каталогов с соотв. отступами, указывая для каждого файла (не являющегося бинарным) количество содержащихся в нем строк.
+/
+Пример вывода:
+Directory: ./a
+  File: ./a/A
+  Directory: ./a/aa
+    File: ./a/aa/AA
+  Directory: ./a/ab
+    File: ./a/ab/AB
+  Directory: ./a/ac
+  Directory: ./a/ad
+    File: ./a/ad/Another File  has 10 lines
+  File: ./a/File With Spaces  has 231 lines
+Directory: ./b
+  File: ./b/B  has 2 lines
+  Directory: ./b/ba
+  Directory: ./b/bb
+  Directory: ./b/bc
+  Directory: ./b/bd
+Directory: ./c
+  File: ./c/C  is binary
+  Directory: ./c/ca
+  Directory: ./c/cb
+  Directory: ./c/cc
+  Directory: ./c/cd
+Directory: ./d
+  File: ./d/D  has 1119 lines
+  Directory: ./d/da
+  Directory: ./d/db
+    File: ./d/db/This is a file  has 0 lines
+  Directory: ./d/dc
+  Directory: ./d/dd
+File: ./README  has 50 lines
+File: ./traverse2.sh  has 34 lines
+File: ./traverse.sh  has 45 lines
+File: ./tree.tar.gz  has 567 lines
+
+
+
+

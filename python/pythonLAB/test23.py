@@ -1,0 +1,7 @@
+print("Enter the value")
+s=str(input())
+s=s.encode('utf-8')
+print(s.decode('koi8-r','ignore'))
+print(s.decode('utf-16','ignore'))
+print(s.decode('cp866','ignore'))
+print(repr(s))

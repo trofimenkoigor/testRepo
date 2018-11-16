@@ -1,0 +1,17 @@
+BASE_BOX = "debian/contrib-stretch64"
+
+BASE_MEMORY = "256"
+
+Vagrant.configure("2") do |config|
+
+  config.vm.define :command do |config|
+      config.vm.box = BASE_BOX
+      config.vm.hostname = "command"
+      config.vm.provider "virtualbox" do |vb|
+        vb.gui = false
+        vb.memory = BASE_MEMORY
+      end
+
+      config.vm.provision "shell", inline: "apt-get update && apt-get install -y puppet"
+  end
+end

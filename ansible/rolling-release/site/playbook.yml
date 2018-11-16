@@ -1,0 +1,105 @@
+---
+################# Part one #######################
+- hosts: loadbalancers
+  become: yes
+  tasks:
+    - name: install nginx
+      apt:
+        name: nginx
+        state: present
+
+    - name: enable nginx
+      service:
+        name: nginx
+        enabled: true
+
+    - name: Install system nginx config
+      template:
+        dest: /etc/nginx/sites-enabled
+        src: default.conf
+      notify: reload nginx
+
+   # - name: Reload nginx to activate letsencrypt site
+   #   service: name=nginx state=restarted
+
+    
+#    - name: install nodeserver systemd unit file
+#      template: src=nodeserver.service dest=/etc/systemd/system/
+#
+#    - name: start nodeserver
+#      systemd: state=started name=nodeserver daemon_reload=yes
+#    
+
+
+
+
+- hosts: appservers
+  become: yes
+  tasks:
+    - name: install git
+      apt: 
+        pkg: git-all
+        state: installed
+        update_cache: true
+
+    - name: deploy to all virtual machines
+      git:
+        repo: 'https://bitbucket.org/ZaRDaK/devops-rolling-release.git'
+        dest: /var/www/rolling
+        version: v1.0.0
+        update: no   
+
+    - name: Ensure apt-transport-https is installed.
+      apt: name=apt-transport-https state=present
+  
+    - name: Add Nodesource apt key.
+      apt_key:
+         url: https://deb.nodesource.com/gpgkey/nodesource.gpg.key
+         state: present
+
+    - name: Grabbing the node repository
+      apt_repository: repo='deb https://deb.nodesource.com/node_7.x stretch main' state=present update_cache=yes
+    
+    #- name: Install node!
+    #  apt: pkg=nodejs state=latestv/
+    - name: ensure nodejs and required packages are installed
+      apt:
+        name: "{{item}}"
+        state: present
+        update_cache: true
+      with_items:
+          - curl
+          - git
+          - build-essential
+          - libssl-dev
+          - nodejs
+   
+    - name: Ensure Node.js and npm are installed.
+      apt: "name=nodejs state=latest"
+
+    - name: "Install forever (to run Node.js app)."
+      npm: name=forever global=yes state=present
+
+    - name: "Check list of Node.js apps running."
+      command: forever list
+      register: forever_list
+      changed_when: false
+
+    - name: "Start index.js app."
+      command: forever start /var/www/rolling/index.js
+#      when: "forever_list.stdout.find('/var/www/rolling/index.js') == -1"
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+

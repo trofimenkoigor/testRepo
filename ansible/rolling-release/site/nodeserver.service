@@ -1,0 +1,14 @@
+[Unit]
+Description=index.js Example Server
+
+[Service]
+ExecStart=/var/www/rolling/index.js
+Restart=always
+  RestartSec=10
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=nodejs-example
+Environment=NODE_ENV=production APP_PORT=3000 APP_KEY=20
+
+[Install]
+WantedBy=multi-user.target

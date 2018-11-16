@@ -1,0 +1,49 @@
+BASE_BOX = "debian/contrib-stretch64"
+
+BASE_MEMORY = "256"
+APP_SERVERS = 3
+
+Vagrant.configure("2") do |config|
+
+  config.ssh.insert_key = false
+
+  config.vm.define :command do |config|
+      config.vm.box = BASE_BOX
+      config.vm.hostname = "command"
+      config.vm.network :private_network, ip: "10.0.15.10"
+      config.vm.provider "virtualbox" do |vb|
+        vb.gui = false
+        vb.memory = BASE_MEMORY
+      end
+
+      config.vm.provision "file", source: "~/.vagrant.d/insecure_private_key", destination: "/home/vagrant/.ssh/id_rsa"
+      config.vm.provision "shell", inline: "chmod 600 ~/.ssh/id_rsa", privileged: false
+  end
+
+  config.vm.define :lb do |config|
+      config.vm.box = BASE_BOX
+      config.vm.hostname = "lb"
+      config.vm.network :private_network, ip: "10.0.15.11"
+      # config.vm.network "forwarded_port", guest: 80, host: 8080
+      config.vm.synced_folder ".", "/vagrant", disabled: true
+      config.vm.provider "virtualbox" do |vb|
+        vb.gui = false
+        vb.memory = BASE_MEMORY
+      end
+  end
+
+  (1..APP_SERVERS).each do |i|
+    config.vm.define "app#{i}" do |config|
+        config.vm.box = BASE_BOX
+        config.vm.hostname = "app#{i}"
+        config.vm.network :private_network, ip: "10.0.15.2#{i}"
+        # config.vm.network "forwarded_port", guest: 80, host: "808#{i}"
+        config.vm.synced_folder ".", "/vagrant", disabled: true
+        config.vm.provider "virtualbox" do |vb|
+          vb.gui = false
+          vb.memory = BASE_MEMORY
+        end
+    end
+  end
+
+end
